@@ -33,7 +33,9 @@ jobs:
       - name: Generate Key
         run: php artisan key:generate
       - name: Create database
-        run:  mysql -uroot -proot -e 'create database aklab;'
+        run:  |
+              sudo /etc/init.d/mysql start  
+              mysql -uroot -proot -e 'create database aklab;'
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
           DB_PORT: ${{ job.services.mysql.ports[3306] }}
