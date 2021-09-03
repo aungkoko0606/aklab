@@ -30,7 +30,8 @@ task('deploy:secrets', function () {
     upload('.env', get('deploy_path') . '/shared');
 });
 
-host('myapp.io')
+//host('myapp.io')
+host('13.250.48.167')
   ->hostname('13.250.48.167')
   ->stage('production')
   ->user('root')
