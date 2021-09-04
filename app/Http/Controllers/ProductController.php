@@ -32,7 +32,7 @@ class ProductController extends Controller
     public function aktest($key, Request $request)
     {
        // print_r(base_path());exit;
-        print_r("confirm");exit;
+        print_r("check versions");exit;
         print_r(time());exit;
         $requestContent = $request->all();
         $parameter = $requestContent['timestamp'];
