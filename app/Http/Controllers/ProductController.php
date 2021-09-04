@@ -31,15 +31,10 @@ class ProductController extends Controller
 
     public function aktest($key, Request $request)
     {
-       // print_r(base_path());exit;
-        print_r("check versions");exit;
-        print_r(time());exit;
-        $requestContent = $request->all();
-        $parameter = $requestContent['timestamp'];
-        print_r($parameter);
-        print_r("ak is testing".$key);exit;
+       /* $requestContent = $request->all();
+        $parameter = $requestContent['timestamp']; */
         
-        return response()->json(['message' => $key], 200);
+        return response()->json(['message' => 'Test Environment'], 200);
     }
 
     /**
