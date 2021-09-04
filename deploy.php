@@ -56,6 +56,7 @@ task('deploy', [
     'artisan:config:cache',
     'artisan:migrate',
     'artisan:queue:restart',
+    'artisan:cache:clear',
     'deploy:symlink',
     'deploy:unlock',
     'cleanup',
