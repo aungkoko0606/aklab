@@ -31,9 +31,9 @@ class ProductController extends Controller
 
     public function aktest($key, Request $request)
     {
-       /* $requestContent = $request->all();
+        /* $requestContent = $request->all();
         $parameter = $requestContent['timestamp']; */
-        
+
         return response()->json(['message' => 'Test Environment'], 200);
     }
 
@@ -45,15 +45,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $item = $request->input('json');
-        $convertArray = (array)json_decode($item);
-        $key = key($convertArray);
-        if (isset($convertArray[$key])) {
-            $value = $convertArray[$key];
+        if (count($request->except('_token')) == 1) {
+            foreach ($request->except('_token') as $key => $value) {
+                $key = $key;
+                $value = $value;
+            }
         } else {
-            return response()->json(['message' => 'Please provide json : {key:value}'], 400);
+            return response()->json(['message' => 'Please insert record by record.'], 400);
         }
-
 
         /* update existing record with same key */
         $checkProduct = Product::where(['key' => $key, 'latest' => 1])->get();
@@ -74,7 +73,6 @@ class ProductController extends Controller
         if ($product) {
             $createDateTime = $product->created_at;
             $fromTime =  $createDateTime->format('g.i a');
-            //    return response()->json(['message' => 'Success', 'id' => $product->id, 'Time' => $fromTime], 201);
             return response()->json(['message' => 'Success', 'product' => $product, 'Time' => $fromTime], 201);
         } else {
             return response()->json(['message' => 'Fail'], 400);
@@ -89,7 +87,7 @@ class ProductController extends Controller
      */
     public function show($key)
     {
-        if(isset($_SERVER['REQUEST_URI'])){
+        if (isset($_SERVER['REQUEST_URI'])) {
             $url = $_SERVER['REQUEST_URI'];
             $url_components = parse_url($url);
         }

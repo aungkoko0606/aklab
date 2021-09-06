@@ -15,7 +15,6 @@ class ProductTest extends TestCase
      * @return void
      */
 
-    
     public function testSuccessfulCreate()
     {
         $productData = [
@@ -78,7 +77,7 @@ class ProductTest extends TestCase
                 ]
             ]);
     }
-    
+
     use RefreshDatabase;
     public function testProductSearch()
     {
