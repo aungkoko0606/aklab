@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
-use DateTime;
-
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
@@ -43,39 +43,16 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        if (count($request->except('_token')) == 1) {
-            foreach ($request->except('_token') as $key => $value) {
-                $key = $key;
-                $value = $value;
-            }
+        $product = $request->store($request);
+        
+        if ($product == "Fail") {
+            return response()->json(['message' => 'Fail'], Response::HTTP_BAD_REQUEST);
         } else {
-            return response()->json(['message' => 'Please insert record by record.'], 400);
-        }
-
-        /* update existing record with same key */
-        $checkProduct = Product::where(['key' => $key, 'latest' => 1])->get();
-        $confirmProduct = $checkProduct->toArray();
-        if ($confirmProduct) {
-            $findProduct = Product::find($confirmProduct[0]['id']);
-            $findProduct->latest = false;
-            $findProduct->save();
-        }
-
-        /* create new record and mark as latest */
-        $data = array(
-            'key' => $key,
-            'value' => json_encode($value)
-        );
-        $product = Product::create($data);
-
-        if ($product) {
             $createDateTime = $product->created_at;
             $fromTime =  $createDateTime->format('g.i a');
-            return response()->json(['message' => 'Success', 'product' => $product, 'Time' => $fromTime], 201);
-        } else {
-            return response()->json(['message' => 'Fail'], 400);
+            return response()->json(['message' => 'Success', 'product' => $product, 'Time' => $fromTime], Response::HTTP_CREATED);
         }
     }
 
@@ -100,18 +77,18 @@ class ProductController extends Controller
             $confirmProduct = $checkProduct->toArray();
 
             if (isset($confirmProduct[0])) {
-                return response()->json(['message' => 'Success', 'data' => $confirmProduct[0]['value']], 200);
+                return response()->json(['message' => 'Success', 'data' => $confirmProduct[0]['value']], Response::HTTP_OK);
             } else {
-                return response()->json(['message' => 'No record found.'], 404);
+                return response()->json(['message' => 'No record found.'], Response::HTTP_NOT_FOUND);
             }
         } else {
             /* without timestamp */
             $checkProduct = Product::where(['key' => $key, 'latest' => 1])->get();
             $confirmProduct = $checkProduct->toArray();
             if (isset($confirmProduct[0])) {
-                return response()->json(['message' => 'Success', 'data' => $confirmProduct[0]['value']], 200);
+                return response()->json(['message' => 'Success', 'data' => $confirmProduct[0]['value']], Response::HTTP_OK);
             } else {
-                return response()->json(['message' => 'No record found.'], 404);
+                return response()->json(['message' => 'No record found.'], Response::HTTP_NOT_FOUND);
             }
         }
     }
@@ -121,9 +98,9 @@ class ProductController extends Controller
         $products = Product::get();
         $confirmProduct = $products->toArray();
         if (isset($confirmProduct) && $confirmProduct != []) {
-            return response()->json(['message' => 'Success', 'product' => json_decode($products)], 200);
+            return response()->json(['message' => 'Success', 'product' => json_decode($products)], Response::HTTP_OK);
         } else {
-            return response()->json(['message' => 'No record found.'], 404);
+            return response()->json(['message' => 'No record found.'], Response::HTTP_NOT_FOUND);
         }
     }
 
